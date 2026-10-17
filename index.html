@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark" style="scroll-behavior: smooth;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS 3D | Fütüristik Dijital Medya Ajansı</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Three.js (3D Kütüphanesi) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- EmailJS SDK Kütüphanesi -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        (function(){
+            // ⚠️ 1. DEĞİŞTİRİLECEK YER: EmailJS Public Key'inizi buraya tırnak içine yazın
+            emailjs.init("6S3e9tX0R4nDmVHHR"); 
+        })();
+    </script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brandDark: '#05070f',
+                        brandCard: 'rgba(15, 23, 42, 0.6)',
+                        neonPurple: '#a855f7',
+                        neonPink: '#ec4899',
+                        neonCyan: '#06b6d4'
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        heading: ['Space Grotesk', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html { scroll-behavior: smooth; }
+        body { background-color: #05070f; color: #f8fafc; overflow-x: hidden; }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.2);
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        #webgl-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 0; pointer-events: none;
+        }
+
+        .content-layer { position: relative; z-index: 10; }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <!-- 3D Canvas Arka Planı -->
+    <div id="webgl-container"></div>
+
+    <div class="content-layer">
+        <!-- HEADER / NAVIGATION -->
+        <header class="fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-all duration-300">
+            <nav class="max-w-7xl mx-auto glass-panel rounded-2xl px-6 py-3 flex items-center justify-between">
+                <a href="#home" class="flex items-center gap-3 font-heading text-xl font-bold tracking-wider">
+                    <span class="w-8 h-8 rounded-lg bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-purple-500/30">
+                        <i class="fa-solid fa-cube"></i>
+                    </span>
+                    <span>NEXUS<span class="text-neonPink">.</span></span>
+                </a>
+
+                <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+                    <a href="#home" class="hover:text-neonPurple transition">Ana Sayfa</a>
+                    <a href="#services" class="hover:text-neonPurple transition">Hizmetler</a>
+                    <a href="#portfolio" class="hover:text-neonPurple transition">Çalışmalar</a>
+                    <a href="#stats" class="hover:text-neonPurple transition">Etki</a>
+                    <a href="#contact" class="hover:text-neonPurple transition">İletişim</a>
+                </div>
+
+                <a href="#contact" class="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold text-xs rounded-xl shadow-lg shadow-purple-500/25 transition transform hover:scale-105 flex items-center gap-2">
+                    <span>Teklif Al</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </nav>
+        </header>
+
+        <!-- HERO SECTION -->
+        <section id="home" class="min-h-screen flex items-center justify-center px-6 pt-28 pb-12">
+            <div class="max-w-5xl mx-auto text-center space-y-8">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-panel border border-purple-500/30 text-xs font-semibold text-purple-300 tracking-wide">
+                    <span class="w-2 h-2 rounded-full bg-neonPink animate-ping"></span>
+                    YENİ NESİL DİJİTAL DENEYİM AJANSI
+                </div>
+
+                <h1 class="font-heading text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-tight">
+                    Markanızı <span class="text-gradient">3D & Yapay Zeka</span> Gücüyle Geleceğe Taşıyın
+                </h1>
+
+                <p class="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto font-light leading-relaxed">
+                    Sıradan web sitelerini ve klasik içerikleri unutun. İnteraktif 3D deneyimler, viral sosyal medya stratejileri ve yapay zeka destekli prodüksiyon ile dijitalde fark yaratın.
+                </p>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                    <a href="#portfolio" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-500 text-white font-bold text-sm rounded-xl shadow-xl shadow-purple-500/30 hover:opacity-90 transition transform hover:-translate-y-1 text-center">
+                        Projelerimizi İnceleyin
+                    </a>
+                    <button onclick="openVideoDemo()" class="w-full sm:w-auto px-8 py-4 glass-panel text-white font-semibold text-sm rounded-xl hover:bg-slate-800/80 transition flex items-center justify-center gap-2 border border-slate-700">
+                        <i class="fa-solid fa-play text-xs text-neonPink"></i>
+                        <span>Neler Yapıyoruz?</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- HİZMETLER SECTION -->
+        <section id="services" class="py-20 px-6">
+            <div class="max-w-7xl mx-auto space-y-12">
+                <div class="text-center space-y-4">
+                    <span class="text-xs font-bold uppercase tracking-widest text-neonPink">Hizmetlerimiz</span>
+                    <h2 class="font-heading text-3xl sm:text-4xl font-bold">Kreatif Teknoloji & Medya Gücü</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Kart 1 -->
+                    <div class="glass-panel p-8 rounded-3xl space-y-6 transition duration-300">
+                        <div class="w-14 h-14 rounded-2xl bg-purple-600/20 text-purple-400 flex items-center justify-center text-2xl border border-purple-500/30">
+                            <i class="fa-solid fa-cubes"></i>
+                        </div>
+                        <h3 class="font-heading text-xl font-bold">3D Web & İnteraktif Lansman</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Ürünlerinizi web üzerinde müşterilerinizin 3D olarak deneyimlemesini sağlayan, tarayıcı tabanlı ultra hızlı WebGL deneyimleri.
+                        </p>
+                    </div>
+
+                    <!-- Kart 2 -->
+                    <div class="glass-panel p-8 rounded-3xl space-y-6 transition duration-300">
+                        <div class="w-14 h-14 rounded-2xl bg-pink-600/20 text-pink-400 flex items-center justify-center text-2xl border border-pink-500/30">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                        <h3 class="font-heading text-xl font-bold">AI Prodüksiyon & Reklam</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Yapay zeka modelleriyle üretilmiş yüksek kaliteli dijital karakterler, reklam filmleri ve sosyal medya görsel kurguları.
+                        </p>
+                    </div>
+
+                    <!-- Kart 3 -->
+                    <div class="glass-panel p-8 rounded-3xl space-y-6 transition duration-300">
+                        <div class="w-14 h-14 rounded-2xl bg-cyan-600/20 text-cyan-400 flex items-center justify-center text-2xl border border-cyan-500/30">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <h3 class="font-heading text-xl font-bold">Viral Performans Yönetimi</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            TikTok, Instagram ve YouTube için veriye dayalı büyüme stratejileri, influencer kurguları ve yüksek ROAS odaklı reklam yönetimi.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PORTFOLYO SECTION -->
+        <section id="portfolio" class="py-20 px-6">
+            <div class="max-w-7xl mx-auto space-y-12">
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                    <div class="space-y-4">
+                        <span class="text-xs font-bold uppercase tracking-widest text-neonPink">Portfolyo</span>
+                        <h2 class="font-heading text-3xl sm:text-4xl font-bold">Öne Çıkan Projelerimiz</h2>
+                    </div>
+                    <p class="text-slate-400 text-sm max-w-md font-light">
+                        Sınırları zorlayan tasarım anlayışımızla markalara kazandırdığımız yenilikçi projelerden bazıları.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Proje 1 -->
+                    <div onclick="openProjectModal('Aura Neo-Fashion', '3D Kıyafet Simülasyonu', '+2.4M Etkileşim', '3D Cloth Sim, WebGL, Instagram API')" class="glass-panel rounded-3xl overflow-hidden group cursor-pointer transform hover:-translate-y-2 transition duration-300">
+                        <div class="h-56 bg-gradient-to-br from-purple-600 via-pink-600 to-amber-500 p-6 flex flex-col justify-between relative overflow-hidden">
+                            <div class="absolute inset-0 bg-black/20"></div>
+                            <span class="relative z-10 self-start px-3 py-1 bg-black/50 backdrop-blur-md rounded-full text-[10px] font-bold tracking-wider uppercase text-purple-200 border border-white/10">3D Lansman</span>
+                            <div class="relative z-10 space-y-1">
+                                <div class="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center text-white text-xl border border-white/20">
+                                    <i class="fa-solid fa-shirt"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6 space-y-3">
+                            <h3 class="font-heading text-lg font-bold">Aura Neo-Fashion</h3>
+                            <p class="text-slate-400 text-xs leading-relaxed">
+                                3D Kıyafet Simülasyonu ve İnteraktif Instagram Kampanyası.
+                            </p>
+                            <span class="text-xs font-mono text-neonPink font-bold block pt-2">+2.4M ETKİLEŞİM</span>
+                        </div>
+                    </div>
+
+                    <!-- Proje 2 -->
+                    <div onclick="openProjectModal('Nova Tech Global', 'AI Prodüksiyon', 'x4.5 ROAS Artışı', 'Sora AI, Midjourney, Meta Ads')" class="glass-panel rounded-3xl overflow-hidden group cursor-pointer transform hover:-translate-y-2 transition duration-300">
+                        <div class="h-56 bg-gradient-to-br from-blue-600 via-cyan-600 to-indigo-900 p-6 flex flex-col justify-between relative overflow-hidden">
+                            <div class="absolute inset-0 bg-black/20"></div>
+                            <span class="relative z-10 self-start px-3 py-1 bg-black/50 backdrop-blur-md rounded-full text-[10px] font-bold tracking-wider uppercase text-cyan-200 border border-white/10">Performans & Video</span>
+                            <div class="relative z-10 space-y-1">
+                                <div class="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center text-white text-xl border border-white/20">
+                                    <i class="fa-solid fa-brain"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6 space-y-3">
+                            <h3 class="font-heading text-lg font-bold">Nova Tech Global</h3>
+                            <p class="text-slate-400 text-xs leading-relaxed">
+                                Yapay Zeka Destekli Video Prodüksiyonu ve Reklam Yönetimi.
+                            </p>
+                            <span class="text-xs font-mono text-neonCyan font-bold block pt-2">X4.5 ROAS ARTIŞI</span>
+                        </div>
+                    </div>
+
+                    <!-- Proje 3 -->
+                    <div onclick="openProjectModal('Vortex Drinks', 'AR & TikTok Filtre', '850K Deneyim', 'Spark AR, TikTok Effect House')" class="glass-panel rounded-3xl overflow-hidden group cursor-pointer transform hover:-translate-y-2 transition duration-300">
+                        <div class="h-56 bg-gradient-to-br from-fuchsia-600 via-purple-800 to-slate-950 p-6 flex flex-col justify-between relative overflow-hidden">
+                            <div class="absolute inset-0 bg-black/30"></div>
+                            <span class="relative z-10 self-start px-3 py-1 bg-black/50 backdrop-blur-md rounded-full text-[10px] font-bold tracking-wider uppercase text-pink-200 border border-white/10">AR & Filtre</span>
+                            <div class="relative z-10 space-y-1">
+                                <div class="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center text-white text-xl border border-white/20">
+                                    <i class="fa-solid fa-glasses"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6 space-y-3">
+                            <h3 class="font-heading text-lg font-bold">Vortex Drinks</h3>
+                            <p class="text-slate-400 text-xs leading-relaxed">
+                                Artırılmış Gerçeklik Filtreleri ve TikTok Challenge Stratejisi.
+                            </p>
+                            <span class="text-xs font-mono text-neonPurple font-bold block pt-2">850K KULLANICI DENEYİMİ</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ETKİ / İSTATİSTİKLER SECTION -->
+        <section id="stats" class="py-20 px-6">
+            <div class="max-w-7xl mx-auto glass-panel rounded-3xl p-8 md:p-12 border border-purple-500/20">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                    <div class="space-y-2">
+                        <h3 class="font-heading text-3xl sm:text-5xl font-bold text-gradient">150M+</h3>
+                        <p class="text-slate-400 text-xs font-semibold tracking-wider uppercase">Toplam Görüntülenme</p>
+                    </div>
+                    <div class="space-y-2">
+                        <h3 class="font-heading text-3xl sm:text-5xl font-bold text-gradient">4.8x</h3>
+                        <p class="text-slate-400 text-xs font-semibold tracking-wider uppercase">Ortalama ROAS</p>
+                    </div>
+                    <div class="space-y-2">
+                        <h3 class="font-heading text-3xl sm:text-5xl font-bold text-gradient">85+</h3>
+                        <p class="text-slate-400 text-xs font-semibold tracking-wider uppercase">Tamamlanan Proje</p>
+                    </div>
+                    <div class="space-y-2">
+                        <h3 class="font-heading text-3xl sm:text-5xl font-bold text-gradient">%99</h3>
+                        <p class="text-slate-400 text-xs font-semibold tracking-wider uppercase">Müşteri Memnuniyeti</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- İLETİŞİM / TEKLİF AL SECTION -->
+        <section id="contact" class="py-20 px-6">
+            <div class="max-w-4xl mx-auto glass-panel p-8 md:p-12 rounded-3xl space-y-8 border border-purple-500/30">
+                <div class="text-center space-y-3">
+                    <span class="text-xs font-bold uppercase tracking-widest text-neonPink">Bize Ulaşın</span>
+                    <h2 class="font-heading text-3xl sm:text-4xl font-bold">Projenizi Birlikte Hayata Geçirelim</h2>
+                    <p class="text-slate-400 text-sm font-light">Formu doldurun, 24 saat içinde ajans ekibimiz sizinle iletişime geçsin.</p>
+                </div>
+
+                <form id="quoteForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Adınız / Şirket Adı</label>
+                            <input type="text" id="formName" required placeholder="Örn: Ahmet Yılmaz" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-neonPurple transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">E-Posta Adresiniz</label>
+                            <input type="email" id="formEmail" required placeholder="ornek@sirket.com" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-neonPurple transition">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Hangi Hizmetle İlgileniyorsunuz?</label>
+                        <select id="formService" class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-neonPurple transition">
+                            <option>3D Web & İnteraktif Lansman</option>
+                            <option>AI Prodüksiyon & Reklam</option>
+                            <option>Viral Performans Yönetimi</option>
+                            <option>Komple Ajans Hizmeti</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Proje Detayları</label>
+                        <textarea id="formDetails" rows="4" required placeholder="Bize projenizden ve hedeflerinizden bahsedin..." class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-neonPurple transition"></textarea>
+                    </div>
+                    <button id="submitBtn" type="submit" class="w-full py-4 bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-500 hover:opacity-90 text-white font-bold text-sm rounded-xl shadow-xl transition flex items-center justify-center gap-2">
+                        <span>Teklif İsteğini Gönder</span>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="border-t border-slate-800/80 py-12 px-6 bg-slate-950/80">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-3 font-heading text-lg font-bold">
+                    <span class="w-7 h-7 rounded-lg bg-gradient-to-tr from-purple-600 to-pink-500 flex items-center justify-center text-white text-xs">
+                        <i class="fa-solid fa-cube"></i>
+                    </span>
+                    <span>NEXUS AJANS</span>
+                </div>
+                <p class="text-slate-500 text-xs">
+                    © 2026 NEXUS Digital Agency. Tüm Hakları Saklıdır.
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- MODAL / POP-UP KATMANLARI -->
+    <div id="modalBackdrop" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <!-- TEKLİF BAŞARI MODALI -->
+        <div id="successModal" class="glass-panel p-8 rounded-3xl max-w-md w-full space-y-6 text-center border border-purple-500/40 hidden">
+            <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center mx-auto text-3xl border border-emerald-500/30">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="space-y-2">
+                <h3 class="font-heading text-2xl font-bold">Teklif Talebiniz Alındı!</h3>
+                <p id="modalUserMessage" class="text-slate-300 text-xs leading-relaxed"></p>
+            </div>
+            <button onclick="closeModal()" class="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl transition">
+                Tamamdır
+            </button>
+        </div>
+
+        <!-- PROJE DETAY MODALI -->
+        <div id="projectModal" class="glass-panel p-8 rounded-3xl max-w-lg w-full space-y-6 border border-pink-500/40 hidden">
+            <div class="flex items-center justify-between">
+                <h3 id="projTitle" class="font-heading text-xl font-bold text-gradient"></h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-times text-lg"></i></button>
+            </div>
+            <div class="space-y-3 text-xs text-slate-300">
+                <p><strong>Kategori:</strong> <span id="projCategory" class="text-neonCyan"></span></p>
+                <p><strong>Elde Edilen Başarı:</strong> <span id="projMetric" class="text-neonPink font-mono font-bold"></span></p>
+                <p><strong>Kullanılan Teknolojiler:</strong> <span id="projTech" class="text-purple-300"></span></p>
+            </div>
+            <button onclick="closeModal()" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs rounded-xl transition">
+                Kapat
+            </button>
+        </div>
+    </div>
+
+    <!-- 3D THREE.JS SCRIPT -->
+    <script>
+        let scene, camera, renderer, mesh;
+        let mouseX = 0, mouseY = 0;
+
+        function init3D() {
+            const container = document.getElementById('webgl-container');
+
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 5;
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            const geometry = new THREE.IcosahedronGeometry(2, 2);
+            const material = new THREE.MeshBasicMaterial({
+                color: 0xa855f7,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.25
+            });
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+            const pointLight = new THREE.PointLight(0xec4899, 2, 50);
+            pointLight.position.set(5, 5, 5);
+            scene.add(pointLight);
+
+            window.addEventListener('resize', onWindowResize);
+            document.addEventListener('mousemove', onMouseMove);
+
+            animate();
+        }
+
+        function onMouseMove(event) {
+            mouseX = (event.clientX / window.innerWidth) - 0.5;
+            mouseY = (event.clientY / window.innerHeight) - 0.5;
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (mesh) {
+                mesh.rotation.x += 0.001; 
+                mesh.rotation.y += 0.0015;
+                mesh.rotation.x += mouseY * 0.005;
+                mesh.rotation.y += mouseX * 0.005;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // --- AKSİYON VE EMAILJS FONKSİYONLARI ---
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Gönderiliyor...`;
+            submitBtn.disabled = true;
+
+            const name = document.getElementById('formName').value;
+            const email = document.getElementById('formEmail').value;
+            const service = document.getElementById('formService').value;
+            const details = document.getElementById('formDetails').value;
+
+            // ⚠️ 2. VE 3. DEĞİŞTİRİLECEK YERLER: Service ID ve Template ID değerlerinizi girin
+            emailjs.send("service_gmogrid", "template_1kvop5v", {
+                from_name: name,
+                from_email: email,
+                selected_service: service,
+                message: details
+            })
+            .then(function(response) {
+                submitBtn.innerHTML = `<span>Teklif İsteğini Gönder</span>`;
+                submitBtn.disabled = false;
+
+                document.getElementById('modalUserMessage').innerHTML = 
+                    `Sayın <strong>${name}</strong>, teklif talebiniz e-posta adresimize ulaşmıştır. En kısa sürede <strong>${email}</strong> adresinize geri dönüş sağlayacağız.`;
+
+                document.getElementById('modalBackdrop').classList.remove('hidden');
+                document.getElementById('successModal').classList.remove('hidden');
+                document.getElementById('projectModal').classList.add('hidden');
+
+                document.getElementById('quoteForm').reset();
+            }, function(error) {
+                submitBtn.innerHTML = `<span>Teklif İsteğini Gönder</span>`;
+                submitBtn.disabled = false;
+                alert("E-posta gönderimi başarısız oldu. Lütfen EmailJS bilgilerinizi kontrol edin. Hata kopyası: " + JSON.stringify(error));
+            });
+        }
+
+        function openProjectModal(title, category, metric, tech) {
+            document.getElementById('projTitle').textContent = title;
+            document.getElementById('projCategory').textContent = category;
+            document.getElementById('projMetric').textContent = metric;
+            document.getElementById('projTech').textContent = tech;
+
+            document.getElementById('modalBackdrop').classList.remove('hidden');
+            document.getElementById('projectModal').classList.remove('hidden');
+            document.getElementById('successModal').classList.add('hidden');
+        }
+
+        function openVideoDemo() {
+            openProjectModal("3D Ajans Tanıtım Demosu", "Görsel Deneyim", "Saniyede 60 FPS Akıcı WebGL", "Three.js, WebGL, GSAP, Tailwind CSS");
+        }
+
+        function closeModal() {
+            document.getElementById('modalBackdrop').classList.add('hidden');
+            document.getElementById('successModal').classList.add('hidden');
+            document.getElementById('projectModal').classList.add('hidden');
+        }
+
+        window.addEventListener('DOMContentLoaded', init3D);
+    </script>
+</body>
+</html>
